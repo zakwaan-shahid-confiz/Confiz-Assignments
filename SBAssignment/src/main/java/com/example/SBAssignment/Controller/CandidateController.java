@@ -30,29 +30,32 @@ public class CandidateController {
         return candidateService.getCandidate(id);
     }
 
-    @RequestMapping(method = RequestMethod.POST,value="/candidates")
+    @PostMapping(value="/candidates")
     public void add(@RequestBody Candidate candidate,@Value("${sbpg.init.logging}") String logging)
     {
+        String loggingMessage = "Candidate Added with ID : %d";
 
         if(logging.equals("DEBUG"))
-            logger.debug("Candidate Added with ID : "+candidate.getId());
+            logger.debug(loggingMessage,candidate.getId());
         else if(logging.equals("INFO"))
-            logger.info("Candidate Added with ID : "+candidate.getId());
+            logger.info(loggingMessage,candidate.getId());
 
         candidateService.addCandidate(candidate);
     }
 
-    @RequestMapping(method = RequestMethod.PUT,value="/candidates/{id}")
+    @PutMapping(value="/candidates/{id}")
     public void update(@RequestBody Candidate candidate, @PathVariable int id,@Value("${sbpg.init.logging}") String logging){
 
+        String loggingMessage = "Candidate Updated with ID : %d";
         candidateService.updateCandidate(candidate);
+
         if(logging.equals("DEBUG"))
-            logger.debug("Candidate Added with ID : "+id);
+            logger.debug(loggingMessage,id);
         else if(logging.equals("INFO"))
-            logger.info("Candidate Added with ID : "+id);
+            logger.info(loggingMessage,id);
     }
 
-    @RequestMapping(method=RequestMethod.DELETE,value="/candidates/{id}")
+    @DeleteMapping(value="/candidates/{id}")
     public void delete(@PathVariable int id){
         candidateService.deleteCandidate(id);
     }

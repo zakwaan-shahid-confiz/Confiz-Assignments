@@ -20,10 +20,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = CandidateController.class)
-@WithMockUser
 class SbAssignmentApplicationTests {
 
 	@Autowired
@@ -41,11 +42,11 @@ class SbAssignmentApplicationTests {
 				thenReturn(java.util.Optional.ofNullable(mockCandidate));
 
 		try {
-			MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/candidates/1")
+			MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/candidates/1")
 					.accept(MediaType.APPLICATION_JSON))
 					.andReturn();
 
-			String expected = "{id : 1, age : 15, name : Zakwaan , gender : Male , city : Lahore ,dob : 15-09-2006}";
+			String expected = "{id : 1 , age : 15 , name : Zakwaan , gender : Male , city : Lahore , dob : 15-09-2006}";
 
 			JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
 		}
@@ -64,6 +65,24 @@ class SbAssignmentApplicationTests {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andReturn();
 
-		Assert.assertEquals("",result.getResponse().getContentAsString());
+		Assert.assertEquals(200,result.getResponse().getStatus());
+	}
+
+	@Test
+	void getAllCandidate() throws UnsupportedEncodingException, JSONException {
+		List<Candidate> candidateList = new ArrayList<>();
+		Mockito.when(
+				candidateService.getAllCandidates()).
+				thenReturn(candidateList);
+
+		try {
+			MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/candidates")
+					.accept(MediaType.APPLICATION_JSON))
+					.andReturn();
+
+			JSONAssert.assertEquals(candidateList.toString(), result.getResponse().getContentAsString(), false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
