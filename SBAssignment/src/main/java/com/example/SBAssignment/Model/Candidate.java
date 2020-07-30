@@ -64,9 +64,6 @@ public class Candidate implements Serializable {
         this.id = id;
     }
 
-    public void display() {
-        System.out.println(this.id+" "+this.name+" "+this.gender+" "+this.city+" "+this.age+" "+this.dob);
-    }
 
     public Candidate(int id, int age, String name, String gender, String city, String dob) {
         this.id = id;
