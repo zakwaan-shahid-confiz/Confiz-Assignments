@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class CandidateController {
 
     Logger logger = LoggerFactory.getLogger(CandidateController.class);
+    private String errorMessage = "ID or Age is negative";
 
     @Autowired
     private CandidateService candidateService;
@@ -26,35 +26,54 @@ public class CandidateController {
     }
 
     @RequestMapping("/candidates/{id}")
-    public Optional<Candidate> getByID(@PathVariable int id){
-        return candidateService.getCandidate(id);
+    public Object getByID(@PathVariable int id) {
+        if(id>0)
+            return candidateService.getCandidate(id);
+        return errorMessage;
+
     }
 
-    @RequestMapping(method = RequestMethod.POST,value="/candidates")
-    public void add(@RequestBody Candidate candidate,@Value("${sbpg.init.logging}") String logging)
+    @PostMapping(value="/candidates")
+    public String add(@RequestBody Candidate candidate,@Value("${sbpg.init.logging}") String logging)
     {
+        if(candidate.getId()>0 && candidate.getAge()>0)
+        {
+            String loggingMessage = "Candidate Added with ID : %d";
+            if(logging.equals("DEBUG"))
+                logger.debug(loggingMessage,candidate.getId());
+            else if(logging.equals("INFO"))
+                logger.info(loggingMessage,candidate.getId());
 
-        if(logging.equals("DEBUG"))
-            logger.debug("Candidate Added with ID : "+candidate.getId());
-        else if(logging.equals("INFO"))
-            logger.info("Candidate Added with ID : "+candidate.getId());
-
-        candidateService.addCandidate(candidate);
+            return candidateService.addCandidate(candidate);
+        }
+        return errorMessage;
     }
 
-    @RequestMapping(method = RequestMethod.PUT,value="/candidates/{id}")
-    public void update(@RequestBody Candidate candidate, @PathVariable int id,@Value("${sbpg.init.logging}") String logging){
+    @PutMapping(value="/candidates/{id}")
+    public String update(@RequestBody Candidate candidate, @PathVariable int id,@Value("${sbpg.init.logging}") String logging){
+        if(id>0 && candidate.getAge()>0)
+        {
+            String loggingMessage = "Candidate Updated with ID : %d";
 
-        candidateService.updateCandidate(candidate);
-        if(logging.equals("DEBUG"))
-            logger.debug("Candidate Added with ID : "+id);
-        else if(logging.equals("INFO"))
-            logger.info("Candidate Added with ID : "+id);
+            if(logging.equals("DEBUG"))
+                logger.debug(loggingMessage,id);
+            else if(logging.equals("INFO"))
+                logger.info(loggingMessage,id);
+
+            return candidateService.updateCandidate(candidate);
+        }
+
+        return errorMessage;
     }
 
-    @RequestMapping(method=RequestMethod.DELETE,value="/candidates/{id}")
-    public void delete(@PathVariable int id){
-        candidateService.deleteCandidate(id);
+    @DeleteMapping(value="/candidates/{id}")
+    public String delete(@PathVariable int id){
+
+        if(id>0)
+        {
+            return candidateService.deleteCandidate(id);
+        }
+        return errorMessage;
     }
 
 }

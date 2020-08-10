@@ -14,16 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = CandidateController.class)
-@WithMockUser
 class SbAssignmentApplicationTests {
 
 	@Autowired
@@ -41,11 +41,11 @@ class SbAssignmentApplicationTests {
 				thenReturn(java.util.Optional.ofNullable(mockCandidate));
 
 		try {
-			MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/candidates/1")
+			MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/candidates/1")
 					.accept(MediaType.APPLICATION_JSON))
 					.andReturn();
 
-			String expected = "{id : 1, age : 15, name : Zakwaan , gender : Male , city : Lahore ,dob : 15-09-2006}";
+			String expected = "{id : 1 , age : 15 , name : Zakwaan , gender : Male , city : Lahore , dob : 15-09-2006}";
 
 			JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
 		}
@@ -64,6 +64,48 @@ class SbAssignmentApplicationTests {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andReturn();
 
-		Assert.assertEquals("",result.getResponse().getContentAsString());
+		Assert.assertEquals(200,result.getResponse().getStatus());
+	}
+
+	@Test
+	void getAllCandidate() throws UnsupportedEncodingException, JSONException {
+		List<Candidate> candidateList = new ArrayList<>();
+		Mockito.when(
+				candidateService.getAllCandidates()).
+				thenReturn(candidateList);
+
+		try {
+			MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/candidates")
+					.accept(MediaType.APPLICATION_JSON))
+					.andReturn();
+
+			JSONAssert.assertEquals(candidateList.toString(), result.getResponse().getContentAsString(), false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	void updateCandidates() throws Exception {
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/candidates/1")
+				.content(mapper.writeValueAsString(mockCandidate))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andReturn();
+
+		Assert.assertEquals(200,result.getResponse().getStatus());
+	}
+
+	@Test
+	void deleteCandidates() throws Exception {
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/candidates/1"))
+				.andReturn();
+
+		Assert.assertEquals(200,result.getResponse().getStatus());
 	}
 }
