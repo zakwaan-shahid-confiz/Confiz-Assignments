@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Candidate implements Serializable {
 
     @Id
-    private int id;
+    private Integer id;
     private int age;
     private String name;
     private String gender;
@@ -72,5 +72,18 @@ public class Candidate implements Serializable {
         this.gender = gender;
         this.city = city;
         this.dob = dob;
+    }
+
+    @Override
+    public String toString() {
+        return " {\n" +
+                "        \"id\": "+id+",\n" +
+                "        \"age\": "+age+",\n" +
+                "        \"name\": "+name+",\n" +
+                "        \"gender\": "+gender+",\n" +
+                "        \"city\": "+city+",\n" +
+                "        \"dob\": "+dob+"\n" +
+                "    " +
+                "}";
     }
 }

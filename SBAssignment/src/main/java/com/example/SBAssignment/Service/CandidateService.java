@@ -27,19 +27,25 @@ public class CandidateService {
         return candidateRepository.findById(id);
     }
 
-    public void addCandidate(Candidate candidate)
+    public String addCandidate(Candidate candidate)
     {
         candidateRepository.save(candidate);
+        return "Candidate Added with ID : " + candidate.getId();
     }
 
-    public void updateCandidate(Candidate candidate)
+    public String updateCandidate(Candidate candidate)
     {
-        candidateRepository.save(candidate);
+        if(candidateRepository.existsById(candidate.getId())) {
+            candidateRepository.save(candidate);
+            return "Candidate Updated with ID : " + candidate.getId();
+        }
+        return "No Such ID";
     }
 
-    public void deleteCandidate(int id)
+    public String deleteCandidate(int id)
     {
         candidateRepository.deleteById(id);
+        return "Candidate Deleted with ID : " + id;
     }
 
 }

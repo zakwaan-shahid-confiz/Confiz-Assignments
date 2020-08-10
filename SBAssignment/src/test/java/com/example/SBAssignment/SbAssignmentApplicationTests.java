@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -84,5 +83,29 @@ class SbAssignmentApplicationTests {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	void updateCandidates() throws Exception {
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/candidates/1")
+				.content(mapper.writeValueAsString(mockCandidate))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andReturn();
+
+		Assert.assertEquals(200,result.getResponse().getStatus());
+	}
+
+	@Test
+	void deleteCandidates() throws Exception {
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/candidates/1"))
+				.andReturn();
+
+		Assert.assertEquals(200,result.getResponse().getStatus());
 	}
 }
