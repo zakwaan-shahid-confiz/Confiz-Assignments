@@ -12,10 +12,10 @@ variables:
   azureSubscription: '49b6daef-f6b4-466c-bb17-cdc2255ffa33'
   
   # Web app name
-  webAppName: ''
+  webAppName: 'confizassignment'
 
   # Environment name
-  environmentName: ''
+  environmentName: 'dev'
   
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
